@@ -1,5 +1,7 @@
 package com.holcomb.sean.recipeapp.services;
 
+import com.holcomb.sean.recipeapp.converters.RecipeCommandToRecipe;
+import com.holcomb.sean.recipeapp.converters.RecipeToRecipeCommand;
 import com.holcomb.sean.recipeapp.domain.Recipe;
 import com.holcomb.sean.recipeapp.repositories.RecipeRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,11 +24,17 @@ class RecipeServiceImplTest {
     @Mock
     RecipeRepository recipeRepository;
 
+    @Mock
+    RecipeCommandToRecipe recipeCommandToRecipe;
+
+    @Mock
+    RecipeToRecipeCommand recipeToRecipeCommand;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        recipeService = new RecipeServiceImpl(recipeRepository);
+        recipeService = new RecipeServiceImpl(recipeRepository, recipeCommandToRecipe, recipeToRecipeCommand);
     }
 
     @Test
@@ -60,5 +68,12 @@ class RecipeServiceImplTest {
         verify(recipeRepository, never()).findById(anyLong());
     }
 
+    @Test
+    public void testDeleteById() throws Exception {
 
+        Long idToDelete = 2L;
+        recipeService.deleteById(idToDelete);
+
+        verify(recipeRepository, times(1)).deleteById(anyLong());
+    }
 }
